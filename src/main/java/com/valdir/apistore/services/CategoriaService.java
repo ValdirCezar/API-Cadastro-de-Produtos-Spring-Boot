@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.valdir.apistore.domain.Categoria;
 import com.valdir.apistore.dto.CategoriaDTO;
 import com.valdir.apistore.repositories.CategoriaRepository;
+import com.valdir.apistore.services.exceptions.DataIntegratyViolationException;
 import com.valdir.apistore.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -38,7 +40,11 @@ public class CategoriaService {
 
 	public void delete(Integer id) {
 		find(id);
-		repo.deleteById(id);
+		try {
+			repo.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DataIntegratyViolationException("Objeto Id: " + id + " não pode ser deletado pois possui associações, TIPO: " + Categoria.class.getName());
+		}
 	}
 
 	public List<Categoria> findAll() {
