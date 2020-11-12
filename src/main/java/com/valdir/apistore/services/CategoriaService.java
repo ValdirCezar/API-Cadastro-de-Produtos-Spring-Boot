@@ -1,8 +1,11 @@
 package com.valdir.apistore.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.valdir.apistore.domain.Categoria;
@@ -32,10 +35,23 @@ public class CategoriaService {
 		updateData(newObj, obj);
 		return repo.save(newObj);
 	}
-	
+
 	public void delete(Integer id) {
 		find(id);
 		repo.deleteById(id);
+	}
+
+	public List<Categoria> findAll() {
+		return repo.findAll();
+	}
+
+	public Page<Categoria> findPage(Integer page, Integer linesPerPage, String direction, String orderBy) {
+		PageRequest pageRequest = PageRequest.of(
+				page, 
+				linesPerPage,
+				org.springframework.data.domain.Sort.Direction.valueOf(direction), 
+				orderBy);
+		return repo.findAll(pageRequest);
 	}
 
 	public Categoria fromDTO(CategoriaDTO objDto) {
