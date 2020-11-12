@@ -32,6 +32,11 @@ public class CategoriaService {
 		updateData(newObj, obj);
 		return repo.save(newObj);
 	}
+	
+	public void delete(Integer id) {
+		find(id);
+		repo.deleteById(id);
+	}
 
 	public Categoria fromDTO(CategoriaDTO objDto) {
 		return new Categoria(objDto.getId(), objDto.getNome());
